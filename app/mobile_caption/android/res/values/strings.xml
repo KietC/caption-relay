@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_description">只读取小米通话翻译窗口中已有的中英文字幕。开启发送后，加密传到你配对的电脑。不录音、不操作界面、不改变麦克风或喇叭。仅开启权限时可在本机预览，不会自动联网发送。</string>
+</resources>

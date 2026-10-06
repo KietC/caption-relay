@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "purpose_en": "Public synthetic ACK interoperability vectors. Never use this fixture key for pairing or production.",
+  "purpose_zh": "公开合成 ACK 互操作向量。禁止将此测试密钥用于配对或生产。",
+  "algorithm": "HMAC-SHA256",
+  "message_encoding": "ASCII",
+  "message_format": "{domain}|{device_id}|{stream_id}|{seq}",
+  "generated_with": ".NET System.Security.Cryptography.HMACSHA256; independently checked with Python standard-library hmac",
+  "key_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "device_id": "phone-test",
+  "stream_id": "12345678-1234-5678-9abc-123456789abc",
+  "vectors": [
+    {"lane": "durable", "domain": "caption-relay-ack-v1", "seq": 1, "mac_hex": "eafa9a090c1e7a194aa56ff37f5a5b1591a464e2577487759e4f5e485b1b26a1"},
+    {"lane": "durable", "domain": "caption-relay-ack-v1", "seq": 99, "mac_hex": "71c6ba3a0fd6b4619a94fdd65b71480ee9ab590dd15b02a7a6b83804580d5605"},
+    {"lane": "durable", "domain": "caption-relay-ack-v1", "seq": 100, "mac_hex": "4ba9f9cf7a1e8de090eb66f3328590c75624ad406616aacf83e8954c44ad4fcd"},
+    {"lane": "durable", "domain": "caption-relay-ack-v1", "seq": 101, "mac_hex": "9f737ad4c9629f425020dfa00bc8ed8bc7fcca9d89a510b195634dcb59e84afe"},
+    {"lane": "live", "domain": "caption-relay-live-ack-v1", "seq": 1, "mac_hex": "fa569924117bef2aad88d78e8dbbb799d093e537099f0e17a28ea0d3faa67ddc"},
+    {"lane": "live", "domain": "caption-relay-live-ack-v1", "seq": 99, "mac_hex": "4a5f4c7633adc332741f2b26a0ccfeed8a8fcc37a97c429f09e0da113e228f0b"},
+    {"lane": "live", "domain": "caption-relay-live-ack-v1", "seq": 100, "mac_hex": "64b0491935718fcf93cce921792fd777705cad91cf0c638a43fcb3c593a7e1f3"},
+    {"lane": "live", "domain": "caption-relay-live-ack-v1", "seq": 101, "mac_hex": "46ab59918e69bedd003740d237e3add90d0170981da4c6eb71b7e731b043bcaf"}
+  ]
+}
