@@ -2,13 +2,40 @@
 
 [![Source checks](https://github.com/KietC/caption-relay/actions/workflows/checks.yml/badge.svg)](https://github.com/KietC/caption-relay/actions/workflows/checks.yml) · [MIT license](LICENSE)
 
-**Bring Android's on-screen bilingual captions to a Windows desktop, with an independent live preview and a recoverable local history.**
+**Read your compatible Xiaomi phone's live bilingual captions on a Windows screen, and keep a local text history.**
 
 [English](#english) · [简体中文](#简体中文) · [Setup](docs/SETUP.md) · [Workflow](docs/WORKFLOW_AND_CHECKPOINTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## English
 
-Caption Relay reads captions that a supported phone already displays. The phone's native feature performs speech recognition and translation; this project transports the resulting text. It does not record audio, include an ASR model, call an LLM, or automatically send captions to a Codex conversation.
+Use Caption Relay when your Xiaomi phone already shows original and translated captions during a supported call or video, but you want a larger window on your PC and a text record to revisit afterward. The phone performs speech recognition and translation; this project brings the resulting text to Windows.
+
+### When to use it
+
+- **Follow a conversation on a larger screen:** read the phone's original and translated lines in a Windows caption window.
+- **Revisit text after the session:** keep local Markdown history without making this bridge an audio recorder.
+- **Recover from a connection interruption:** retain captured history in a phone queue while an independent channel keeps the newest preview moving.
+
+| You provide | You get |
+| --- | --- |
+| A compatible Xiaomi phone already displaying bilingual captions | Original and translated lines in a Windows window |
+| A paired Android sender and a running Windows receiver | A live preview plus a separate, recoverable local text history |
+| Non-sensitive test speech supported by the phone | A way to verify the complete phone-to-window-to-history path |
+
+**Illustrative result, using invented text:** the phone displays `What time does the meeting start?` and `会议几点开始？`; the Windows window shows those lines and the local history retains the captured text. Observation timestamps describe when captions were seen, not word positions in a recording.
+
+### Real platforms and tools used
+
+| Platform or tool | Its role in this project |
+| --- | --- |
+| **Xiaomi native bilingual captions / call translation** | The actual text source. The [Android reader](app/mobile_caption/android/src/org/captionrelay/bridge/CaptionAccessibilityService.java) currently targets `com.xiaomi.aiasst.vision` and specific caption nodes. |
+| **Android Accessibility Service** | Reads the caption UI and sends its text. It does not enable the phone's recognition feature. |
+| **Windows x64, Python and Tkinter** | Runs the receiver, larger caption window and local Markdown history. |
+| **Cloudflare Quick Tunnel / cloudflared** | Provides the temporary HTTPS route used by the included controller when the phone sends to the PC over the Internet. |
+| **Android SDK, ADB and JDK 21** | Builds the Android sender and supports owner-controlled USB setup and pairing. |
+| **Codex** | Was used to develop and operate this workflow. The optional [operator skill](skills/caption-relay/SKILL.md) guides a coding assistant; it does not automatically paste or send captions to a Codex chat. |
+
+These names explain the implementation and deployment context; they do not imply affiliation. Caption Relay does not record audio, include an ASR model, call an LLM or send messages to another application.
 
 The Android reader currently targets Xiaomi caption packages and accessibility nodes. The desktop application targets Windows x64. Android API 26 is the installation minimum, **not a promise that every API 26+ device exposes compatible bilingual captions**. There is no complete iOS implementation.
 
@@ -25,7 +52,7 @@ The Android reader currently targets Xiaomi caption packages and accessibility n
 
 This repository contains source, tests, and build instructions. It does not ship credentials, private conversation examples, production databases, signed APKs, or a ready-made installer.
 
-1. Check that your phone's native bilingual captions actually appear and are accessible.
+1. Start with the [phone compatibility check](docs/SETUP.md#1-check-the-phone-before-building-anything): confirm that native original and translated captions actually appear and are accessible.
 2. Install Python 3.11 x64, JDK 21, and Android SDK platform/build-tools 36.
 3. Follow [Setup](docs/SETUP.md) **in order**: dependencies → Python/JVM tests → new-install signing → APK → permissions → local preview → private pairing → desktop start → fresh real captions.
 4. Use [Troubleshooting](docs/TROUBLESHOOTING.md) if any checkpoint fails.
@@ -79,6 +106,21 @@ Read the [core code guide](docs/CORE_CODE.md) for the capture, latest-slot, auth
 - The development APK is debuggable for owner-controlled USB pairing. It is not presented as an app-store hardened release.
 - There is no OTA update system, automatic GPT/Codex message sender, or automatic merge into another master conversation record.
 
+### Choose the right project
+
+The repositories below have different inputs. Links are navigation, not a claim that an automatic cross-project integration already exists.
+
+| Your task | Project |
+| --- | --- |
+| Show compatible phone captions on a PC | **Caption Relay — this repository** |
+| Transcribe an existing audio/video file | [Polyglot Media Workbench](https://github.com/KietC/polyglot-media-workbench) |
+| Save and review a specified OKKI customer record | [CRM Evidence Workbench](https://github.com/KietC/crm-evidence-workbench) |
+| Archive records from an adapted website or research public market leads | [Local Evidence Collector](https://github.com/KietC/local-evidence-collector) |
+| Organize a trade-show exhibitor directory | [Exhibitor Research Archive](https://github.com/KietC/exhibitor-research-archive) |
+| Investigate who manufactures a product | [FactoryTrace](https://github.com/KietC/factorytrace) |
+
+Use the media workbench for audio-based transcripts with audio start/end positions. Caption Relay's UI observation timestamps are a different kind of record and cannot replace an audio timeline.
+
 ### Development and contribution
 
 Use the isolated tests in [Setup](docs/SETUP.md) before editing transport or migration code. Changes to sequence domains, encryption AAD, acknowledgements, queue deletion, or pairing must keep corresponding regression tests. Current `app/` comments are maintained in English and Chinese. [Historical snapshots](history/README.md) are unmaintained reference code and may retain single-language comments; they are not the current build or configuration guide. Use synthetic text in issues and pull requests. Never attach your pairing code, signing key, database, conversation history, private tunnel URL, or raw diagnostic archive.
@@ -89,9 +131,36 @@ The project is licensed under [MIT](LICENSE). Dependencies and external tools re
 
 ## 简体中文
 
-**把 Android 手机上已经显示的双语字幕传到 Windows 电脑，分别提供即时预览和可恢复的本地历史。**
+**把兼容小米手机正在显示的双语字幕放到 Windows 大屏上看，并保存本地文字记录。**
 
-Caption Relay 读取兼容手机已经显示的字幕。语音识别和翻译由手机原生功能完成，本项目负责传输文字，不录音、不包含 ASR 模型、不调用大模型，也不会自动把字幕发送到 Codex 聊天。
+手机在支持的通话或视频中已经显示原文和译文，但你想在电脑看得更清楚、结束后还能回顾文字，就可以使用 Caption Relay。语音识别和翻译由手机原生功能完成，本项目把结果传到 Windows。
+
+### 适合什么场景
+
+- **边交流边看大屏：**在 Windows 字幕窗口阅读手机的原文和译文。
+- **结束后回顾文字：**保存本地 Markdown 历史；桥接程序本身不录音。
+- **连接中断后补回记录：**已采集的历史在手机排队保存，最新预览走独立通道。
+
+| 你准备什么 | 最后得到什么 |
+| --- | --- |
+| 已能显示双语字幕的兼容小米手机 | Windows 窗口中的原文和译文 |
+| 已配对的 Android 发送端与正在运行的 Windows 接收端 | 即时预览及另一条可恢复的本地文字历史 |
+| 手机原生功能支持的不敏感测试讲话 | 核对“手机 → 电脑窗口 → 历史记录”是否完整打通 |
+
+**虚构示例：**手机显示 `What time does the meeting start?` 和 `会议几点开始？`，电脑窗口同步显示这两行，本地历史保留采集到的文字。记录中的观察时间表示何时看到字幕，不是录音里每个词的起止时间。
+
+### 实际用到了哪些平台和工具
+
+| 平台或工具 | 在本项目中的作用 |
+| --- | --- |
+| **小米原生双语字幕 / 通话翻译** | 真正的文字来源。[Android 读取器](app/mobile_caption/android/src/org/captionrelay/bridge/CaptionAccessibilityService.java)当前针对 `com.xiaomi.aiasst.vision` 及指定字幕节点。 |
+| **Android 无障碍服务** | 读取字幕界面并发送文字，不替手机开启识别功能。 |
+| **Windows x64、Python、Tkinter** | 运行接收器、大屏字幕窗口和本地 Markdown 历史。 |
+| **Cloudflare Quick Tunnel / cloudflared** | 手机通过互联网向电脑发送时，内置控制器使用的临时 HTTPS 通道。 |
+| **Android SDK、ADB、JDK 21** | 构建手机发送端，支持本人控制的 USB 设置与配对。 |
+| **Codex** | 用于开发和操作这套流程。可选的[操作 skill](skills/caption-relay/SKILL.md)指引编码助手，不会自动把字幕粘贴或发送到 Codex 聊天。 |
+
+这些名称用于说明实现和部署环境，不表示合作或隶属关系。本项目不录音、不内置 ASR 模型、不调用大模型，也不向其他应用发送消息。
 
 当前 Android 读取器针对小米字幕包名与无障碍节点，桌面端针对 Windows x64。Android API 26 只是安装最低版本，**不代表所有 Android 8.0 及以上手机都能提供兼容双语字幕**。本项目没有完整 iOS 实现。
 
@@ -108,7 +177,7 @@ Caption Relay 读取兼容手机已经显示的字幕。语音识别和翻译由
 
 仓库提供源码、测试及构建流程，不包含连接凭据、真实对话样例、生产数据库、已经签名的 APK 或现成安装包。
 
-1. 先确认手机自身的双语字幕能够出现，而且无障碍能读取。
+1. 先按[手机兼容性检查](docs/SETUP.md#1-check-the-phone-before-building-anything)确认手机自身原文和译文都能出现，而且无障碍能读取；详细中文步骤在该指南后半部分。
 2. 准备 Python 3.11 x64、JDK 21、Android SDK platform/build-tools 36。
 3. **按顺序**阅读[安装与配置](docs/SETUP.md)：依赖 → Python/JVM 测试 → 新安装签名 → APK → 权限 → 本地预览 → 私密配对 → 电脑启动 → 新的真实字幕验收。
 4. 任一检查点失败，按[故障排查](docs/TROUBLESHOOTING.md)处理。
@@ -144,6 +213,21 @@ Caption Relay 读取兼容手机已经显示的字幕。语音识别和翻译由
 - 请求 RTT、窗口轮询间隔及合成测试都不等于“讲话到电脑显示”的端到端延迟，不能承诺公网毫秒级瞬时送达。
 - 开发 APK 为便于本人 USB 配对而开启 debuggable，不应当作完成加固的应用商店版本。
 - 未实现 OTA、自动发送 GPT/Codex 消息或自动合并到另一本总对话记录。
+
+### 六个项目怎么选
+
+以下项目处理的输入不同。这里提供选用导航，不表示已经实现跨仓库自动连接。
+
+| 你要做的事 | 选择的项目 |
+| --- | --- |
+| 把兼容手机的字幕显示在电脑上 | **Caption Relay：本仓库** |
+| 转写现有录音或视频 | [Polyglot Media Workbench](https://github.com/KietC/polyglot-media-workbench) |
+| 保存和复盘指定 OKKI 客户记录 | [CRM Evidence Workbench](https://github.com/KietC/crm-evidence-workbench) |
+| 归档已适配网站的记录，或研究公开市场线索 | [Local Evidence Collector](https://github.com/KietC/local-evidence-collector) |
+| 整理展会展商名单 | [Exhibitor Research Archive](https://github.com/KietC/exhibitor-research-archive) |
+| 调查产品的实际制造方 | [FactoryTrace](https://github.com/KietC/factorytrace) |
+
+需要根据原声生成带音频起止时间的转写时，选择音视频工作台。Caption Relay 记录的是屏幕字幕观察时间，不能替代录音时间轴。
 
 ### 开发与贡献
 
