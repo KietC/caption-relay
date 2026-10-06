@@ -31,6 +31,10 @@ def version(command):
 
 
 def main(argv=None):
+    # A bilingual CLI must not depend on the Windows ANSI code page.
+    # 双语命令行不能依赖 Windows ANSI 代码页。
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--android-sdk", type=Path)
     parser.add_argument("--java-home", type=Path)

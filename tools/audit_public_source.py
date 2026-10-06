@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 import source_bundle
 
@@ -51,6 +52,10 @@ def candidates(fileset):
 
 
 def main(argv=None):
+    # Use predictable UTF-8 for bilingual output even when redirected on Windows.
+    # 即使 Windows 重定向输出，也统一使用 UTF-8 显示双语信息。
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fileset", type=Path, help="Explicit schema-1 path list or hashed allowlist")
     args = parser.parse_args(argv)
